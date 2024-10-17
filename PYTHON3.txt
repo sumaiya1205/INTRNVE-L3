@@ -1,0 +1,66 @@
+import os
+
+# File containing quiz questions and answers
+QUIZ_FILE = "quiz.txt"
+
+def load_quiz():
+    """Load quiz questions and answers from file."""
+    quiz = []
+    if os.path.exists(QUIZ_FILE):
+        with open(QUIZ_FILE, "r") as file:
+            for line in file:
+                # Each line format: question|option1|option2|option3|option4|correct_option
+                parts = line.strip().split("|")
+                question = parts[0]
+                options = parts[1:5]
+                correct_answer = parts[5]
+                quiz.append({"question": question, "options": options, "answer": correct_answer})
+    return quiz
+
+def display_question(question_data, q_num):
+    """Display a single quiz question and return the user's answer."""
+    print(f"\nQuestion {q_num}: {question_data['question']}")
+    for i, option in enumerate(question_data['options']):
+        print(f"{i+1}. {option}")
+    answer = input("Your answer (1-4): ")
+    return answer
+
+def run_quiz():
+    """Run the quiz, ask questions, and calculate score."""
+    quiz = load_quiz()
+
+    if not quiz:
+        print("No quiz available!")
+        return
+
+    score = 0
+    for i, question_data in enumerate(quiz):
+        answer = display_question(question_data, i + 1)
+        
+        # Check if the answer is correct
+        if answer == question_data['answer']:
+            print("Correct!")
+            score += 1
+        else:
+            print(f"Wrong! The correct answer is {question_data['answer']}.")
+
+    print(f"\nYour final score is: {score}/{len(quiz)}")
+
+def main():
+    """Main function to run the quiz application."""
+    while True:
+        print("\n--- Quiz Application ---")
+        print("1. Start Quiz")
+        print("2. Exit")
+        choice = input("Choose an option (1-2): ")
+
+        if choice == '1':
+            run_quiz()
+        elif choice == '2':
+            print("Exiting the quiz. Goodbye!")
+            break
+        else:
+            print("Invalid option. Please choose again.")
+
+if __name__ == "__main__":
+    main()
